@@ -7,7 +7,7 @@ Be the first to call "Bananagrams!".
 
 How to Play:
 1. With your initial 15 tiles begin by building a grid of letters where any adjacent tiles must spell a valid.
-   This can either be from right to left or from top to bottom.
+   This can either be from right to left or from top to bottom. Look at the boards above for an example.
     - Click anywhere on your and type the word you want to place, and hit enter. If the tiles are in your hand, the word will appear on your board.
     - By default, the program will place letters from left to right. If you would like to place letters from top to bottom, press the down arrow
       before pressing enter.
