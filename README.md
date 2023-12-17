@@ -1,6 +1,6 @@
 <img width="1391" alt="Screenshot 2023-12-16 at 10 31 04 PM" src="https://github.com/cojolo1/Bananagrams/assets/110422199/e365d642-5c6e-41ef-85ac-31f8121340d8">
 
-This is a digital version of the modern boardgame _Bananagrams_!
+This is a digital version of the modern boardgame _Bananagrams_! For one player only against an AI opponent.
 
 Goal of The Game:
 Be the first to finish your board.
@@ -17,4 +17,4 @@ How to Play:
 4. If a tile in your hand is giving you trouble, click it, then press 2 to "Dump!". This will place the tile back in the main pile and deal you three
    tiles back.
 5. Once you have no more tiles in your hand and there is less than 2 tiles remaining in the main pile, press the space bar to call "Bananagrams!" and
-   end the game.
+   end the game. If the AI opponent calls "Bananagrams!" before you, then you lose.
