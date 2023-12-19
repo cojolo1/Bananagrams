@@ -1,8 +1,8 @@
 <img width="1391" alt="Screenshot 2023-12-16 at 10 31 04 PM" src="https://github.com/cojolo1/Bananagrams/assets/110422199/e365d642-5c6e-41ef-85ac-31f8121340d8">
 
-Play in your web browser! https://cojolo.itch.io/bananagrams
-
 This is a digital version of the modern boardgame, _Bananagrams_! For one player only against an AI opponent.
+
+Play in your web browser! https://cojolo.itch.io/bananagrams
 
 Goal of The Game:
 Be the first to call "Bananagrams!".
