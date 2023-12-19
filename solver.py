@@ -1,5 +1,6 @@
 from letter_tree import basic_english
 from alg_board import sample_board
+import random
 
 class SolveState:
     def __init__(self, dictionary, board, rack):
@@ -56,15 +57,12 @@ class SolveState:
 
 
     def pic_random_board(self):
-        import random
         random.shuffle(self.valid_boards)
         board_to_return = self.valid_boards[0]
         self.valid_boards.pop(0)
         return board_to_return
 
     def pick_random_start(self):
-
-        import random
         random.shuffle(self.valid_starters)
         # longest_starter = ""
         # for i in self.valid_starters:
