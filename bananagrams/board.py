@@ -51,8 +51,6 @@ class Board:
 
         if piece.row < 15:
             self.player2_hand[self.player2_hand.index(piece)] = 0
-            # self.player2_hand.remove(piece)
-
 
 
     def ai_move(self, piece, row, col, index_of_tile_in_player_hand):
@@ -180,8 +178,6 @@ class Board:
             tiles.append(Piece('Y'))
 
         random.shuffle(tiles)
-
-        #self.tiles = tiles
         self.tiles = tiles[:77]
 
     def deal_inital(self):
@@ -205,6 +201,25 @@ class Board:
             if i == 0:
                 list_of_letters.append(0)
             else:
+                list_of_letters.append(i.letter)
+
+        return list_of_letters
+
+    def hand_to_list_of_letters(self, hand):
+        list_of_letters = []
+        for i in hand:
+            if i == 0:
+                list_of_letters.append(0)
+            else:
+                list_of_letters.append(i.letter)
+
+        return list_of_letters
+
+
+    def hand_to_list_of_letters_no_zeros(self, hand):
+        list_of_letters = []
+        for i in hand:
+            if i != 0:
                 list_of_letters.append(i.letter)
 
         return list_of_letters
