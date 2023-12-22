@@ -1,7 +1,6 @@
 from letter_tree import basic_english
 from alg_board import sample_board
 import random
-
 class SolveState:
     def __init__(self, dictionary, board, rack):
         self.dictionary = dictionary
@@ -54,27 +53,39 @@ class SolveState:
         board_if_we_played_that.get_tiles()[15][0] = word
 
 
+    def pic_board_with_trouble_letter(self, letter):
+        board_with_trouble_letter = None
 
+        print("The trouble letter is: ", letter)
+        for i in self.valid_boards:
+            if letter.lower() in i.get_tiles()[15][0]:
+                board_with_trouble_letter = i
+
+        if board_with_trouble_letter == None:
+            print("No Boards With Trouble Letter")
+            return self.pic_random_board()
+        else:
+            return board_with_trouble_letter
 
     def pic_random_board(self):
+        random.seed(None)
         random.shuffle(self.valid_boards)
         board_to_return = self.valid_boards[0]
-        self.valid_boards.pop(0)
+        # self.valid_boards.pop(0)
         return board_to_return
 
     def pick_random_start(self):
+
         random.shuffle(self.valid_starters)
-        # longest_starter = ""
-        # for i in self.valid_starters:
-        #     if len(i) > len(longest_starter):
-        #         longest_starter = i
-        # return longest_starter
         return self.valid_starters[0]
 
     def initial_legal_move(self, word):
-
-        if len(word) > 1 and len(word) < 16:
-            self.valid_starters.append(word)
+        if len(self.valid_starters) == 0:
+            if len(word) > 3 and len(word) < 16:
+                self.valid_starters.append(word)
+        else:
+            if len(word) > 5 and len(word) < 16:
+                self.valid_starters.append(word)
 
     def intial_all_words(self, partial_word, current_node):
         list_of_valid_starter_words = []
