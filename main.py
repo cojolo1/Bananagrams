@@ -1,7 +1,7 @@
 import pygame
-from bananagrams.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED, WHITE, LETTERCOLOR
-from bananagrams.board import Board
-from bananagrams.game import Game
+from game_bananagrams.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED, WHITE, LETTERCOLOR
+from game_bananagrams.board import Board
+from game_bananagrams.game import Game
 from solver import SolveState
 FPS = 60
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -15,10 +15,6 @@ def get_row_col_from_mouse(pos):
     row = y // SQUARE_SIZE
     col = (x - 16 * SQUARE_SIZE) // SQUARE_SIZE
     return row, col
-
-def run_ai(game):
-    game.ai_play()
-    game.update("")
 
 def main():
 
@@ -34,20 +30,16 @@ def main():
     active = False
     selected_tile = False
 
-    game.update(user_text)
-    game.do_nothing()
-
-    game.ai_inital_play()
-
     AI_PLAY = pygame.USEREVENT + 1
 
-    pygame.time.set_timer(AI_PLAY, 4000)
+    AI_PLAY2 = pygame.USEREVENT + 2
+
+    pygame.time.set_timer(AI_PLAY2, 1500, 1)
+
+    pygame.time.set_timer(AI_PLAY, 4500)
 
     while run:
         clock.tick(FPS)
-        if game.check_game_over():
-            game.game_over = True
-            game_over = True
 
         for event in pygame.event.get():
 
@@ -55,8 +47,14 @@ def main():
                 run = False
             if game_over == False:
 
+                if event.type ==AI_PLAY2:
+                    game.ai_inital_play()
+                    game.update(user_text)
+
                 if event.type == AI_PLAY:
-                    game.ai_normal_play()
+                    if game.ai_normal_play() == True:
+                        game.game_over = True
+                        game_over = True
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_1:
