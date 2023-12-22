@@ -1,13 +1,40 @@
-import pygame
-from game_bananagrams.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED, WHITE, LETTERCOLOR
-from game_bananagrams.board import Board
-from game_bananagrams.game import Game
+import pygame as pg
+import asyncio
+from bananagrams.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED, WHITE, LETTERCOLOR
+from bananagrams.board import Board
+from bananagrams.game import Game
 from solver import SolveState
-FPS = 60
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Banagrams!')
 
-pygame.init()
+try:
+    import aio.gthread as threading
+except:
+    ...
+
+from threading import Thread
+
+pg.init()
+def new_screen():
+    WIN = pg.display.set_mode((WIDTH, HEIGHT))
+    pg.display.set_caption('Banagrams!')
+    return WIN
+
+async def main():
+    import random
+    random.seed(None)
+    FPS = 60
+    clock = pg.time.Clock()
+    clock.tick(FPS)
+    run = True
+    win = new_screen()
+    Thread(target=game_loop, args = [win]).start()
+    t = 0
+    while run:
+        pg.display.update()
+        await asyncio.sleep(0)
+        pass
+
+    pg.quit()
+    pass
 
 
 def get_row_col_from_mouse(pos):
@@ -16,12 +43,15 @@ def get_row_col_from_mouse(pos):
     col = (x - 16 * SQUARE_SIZE) // SQUARE_SIZE
     return row, col
 
-def main():
 
+
+def game_loop(win):
+    game = Game(win)
+
+    FPS = 60
     run = True
-    clock = pygame.time.Clock()
-    game = Game(WIN)
-
+    clock = pg.time.Clock()
+    # clock.tick(FPS)
     user_text = ''
     r_row = 0
     r_col = 0
@@ -30,69 +60,77 @@ def main():
     active = False
     selected_tile = False
 
-    AI_PLAY = pygame.USEREVENT + 1
 
-    AI_PLAY2 = pygame.USEREVENT + 2
+    AI_PLAY = pg.USEREVENT + 1
 
-    pygame.time.set_timer(AI_PLAY2, 1500, 1)
+    AI_PLAY2 = pg.USEREVENT + 2
 
-    pygame.time.set_timer(AI_PLAY, 4500)
+    pg.time.delay(1500)
+    game.ai_inital_play()
+    game.update(user_text)
+    pg.time.delay(500)
 
-    while run:
+    # pg.time.set_timer(AI_PLAY2, 150, 0)
+
+    pg.time.set_timer(AI_PLAY, 4500)
+
+
+    while not aio.exit:
         clock.tick(FPS)
 
-        for event in pygame.event.get():
+        for event in pg.event.get():
 
-            if event.type == pygame.QUIT:
+            if event.type == pg.QUIT:
                 run = False
-            if game_over == False:
 
-                if event.type ==AI_PLAY2:
-                    game.ai_inital_play()
-                    game.update(user_text)
+            if game_over == False:
+                # if event.type ==AI_PLAY2:
+                #     game.ai_inital_play()
+                #     # game.update(user_text)
 
                 if event.type == AI_PLAY:
+
                     if game.ai_normal_play() == True:
                         game.game_over = True
                         game_over = True
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_1:
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_1:
 
                         print("Peel!")
                         # game.peel()
                         game.human_peel()
                         #game.player2_peel()
 
-                    elif event.key == pygame.K_SPACE:
+                    elif event.key == pg.K_SPACE:
                         print("Space")
                         game.game_over = True
                         game_over = True
 
                         # run = False
 
-                    elif event.key == pygame.K_2 and r_row == 15:
+                    elif event.key == pg.K_2 and r_row == 15:
                         print("Dump!")
                         game.human_dump(r_row, r_col)
 
-                    elif event.key == pygame.K_BACKSPACE and active == True:
+                    elif event.key == pg.K_BACKSPACE and active == True:
                         user_text = user_text[:-1]
                         print("Backspace")
                         print(user_text)
-                    elif event.key == pygame.K_RETURN and active == True:
+                    elif event.key == pg.K_RETURN and active == True:
                         active = False
                         game.place_word(user_text, r_row, r_col, direction)
                         direction = "RIGHT"
                         user_text=''
-                    elif event.key == pygame.K_DOWN and active == True:
+                    elif event.key == pg.K_DOWN and active == True:
                         direction = "DOWN"
                     elif active == True:
                         user_text += event.unicode
                         print(user_text)
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pg.MOUSEBUTTONDOWN:
 
-                    pos = pygame.mouse.get_pos()
+                    pos = pg.mouse.get_pos()
                     row, col = get_row_col_from_mouse(pos)
                     print("You selected row: ", row)
                     print("You selected column: ", col)
@@ -121,10 +159,8 @@ def main():
                             r_row = row
                             r_col = col
 
-        game.update(user_text)
+            game.update(user_text)
+        yield aio
 
 
-
-    pygame.quit()
-
-main()
+asyncio.run(main())
