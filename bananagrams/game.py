@@ -2,11 +2,11 @@ import copy
 
 import pygame
 from .constants import RED, WHITE, BLUE, SQUARE_SIZE, LETTERCOLOR, BLACK
-from game_bananagrams.board import Board
+from bananagrams.board import Board
 from solver import SolveState
 from alg_board import Alg_Board
 from letter_tree import basic_english
-from game_bananagrams.piece import Piece
+from bananagrams.piece import Piece
 
 
 class Game:
@@ -24,6 +24,7 @@ class Game:
         self.previous_hands_tiles = []
 
         self.trouble_words = []
+        self.most_common_trouble_letters = []
         self.backtracker_called_count = 0
         self.secret_dump_called_count = 0
         self.secret_secret_dump_called_count = 0
@@ -34,6 +35,7 @@ class Game:
         self.is_peel = False
         self.is_dump = False
         self.game_over = False
+        self.found_board = True
 
     def _init(self):
         self.selected = None
@@ -45,15 +47,18 @@ class Game:
     def find_most_troublesome_word(self):
         return max(set(self.trouble_words), key=self.trouble_words.count)
 
+    def find_ultimate_troublesome_word(self):
+        return max(set(self.most_common_trouble_letters), key=self.most_common_trouble_letters.count)
+
     def ai_dump(self):
         print("Dump!")
         if len(self.board.tiles) > 3:
             trouble_letter = self.find_most_troublesome_word()
-            print("The trouble letter is: ", trouble_letter)
+
             for x in range(len(self.board.player1_hand)):
                 if self.board.player1_hand[x] != 0:
                     if self.board.player1_hand[x].letter == trouble_letter:
-                        print("The trouble letter is: " + trouble_letter)
+
                         print("Dumping: " + self.board.player1_hand[x].letter)
                         # Take the element at the filled position and reset it col/row
                         self.board.player1_hand[x].set_row_col_without_calc(None, None)
@@ -88,8 +93,9 @@ class Game:
                     k += 1
 
             self.update("")
-            self.trouble_words = []
+            # self.trouble_words = []
             self.backtracker_called_count = 0
+            self.secret_dump_called_count += 1
 
         else:
             print("Secret Dump")
@@ -128,17 +134,25 @@ class Game:
 
         if self.secret_dump_called_count < 1:
             print("Keeping valid boards at 20")
-            self.desired_valid_boards = 20
-        elif self.secret_secret_dump_called_count > 2:
-            print("Changing Valid Boards to 300")
-            self.desired_valid_boards = 300
+            self.desired_valid_boards = 50
+        elif self.secret_secret_dump_called_count > 1:
+            print("Changing Valid Boards to 400")
+            self.trouble_words = []
+            self.desired_valid_boards = 600
             self.secret_secret_dump_called_count = 0
         else:
             print("Changing Valid Boards to 200")
             self.desired_valid_boards = 200
             self.secret_dump_called_count = 0
             self.secret_secret_dump_called_count += 1
+
+        if self.found_board == False:
+            print("Found Board is False")
+            self.desired_valid_boards = 40
+
+        self.found_board = False
         steps_back = 0
+
         for board_num in reversed(range(len(self.previous_boards))):
             print("Steps Back:", steps_back)
             print("Now on board: ", board_num + 1)
@@ -155,7 +169,7 @@ class Game:
                     if self.previous_boards[board_num][i][j] != None and self.previous_boards[board_num][i][j] != 0:
                         board_to_parse.set_tile((i, j), self.previous_boards[board_num][i][j].letter.lower())
 
-
+            # found_board = False
 
             solver = SolveState(basic_english(), board_to_parse, current_hand)
             solver.find_all_options()
@@ -167,15 +181,15 @@ class Game:
 
                 continue
             else:
-
+                self.found_board = True
                 if self.desired_valid_boards == 200:
                     print("The total valid boards is", len(solver.valid_boards))
                     print("Changing Valid Boards to 30")
-                    self.desired_valid_boards = 30
-                elif self.desired_valid_boards == 300:
+                    self.desired_valid_boards = 50
+                elif self.desired_valid_boards == 600:
                     print("The total valid boards is", len(solver.valid_boards))
                     print("Changing Valid Boards to 30")
-                    self.desired_valid_boards = 30
+                    self.desired_valid_boards = 50
                 """New Test Code Begin"""
 
                 new_board = self.previous_boards[board_num]
@@ -271,7 +285,7 @@ class Game:
 
             self.peel()
 
-        elif self.backtracker_called_count > 2:
+        elif self.backtracker_called_count > 4:
             self.ai_dump()
 
         elif len(solver.valid_boards) == 0:
@@ -288,8 +302,9 @@ class Game:
                 new_board_tiles = solver.pic_random_board().get_tiles()
                 self.second_play = False
             else:
+                self.most_common_trouble_letters.append(self.find_most_troublesome_word())
                 new_board_tiles = solver.pic_board_with_trouble_letter(self.find_most_troublesome_word()).get_tiles()
-                self.trouble_words = []
+                # self.trouble_words = []
                 self.second_play = True
 
 
@@ -317,9 +332,11 @@ class Game:
                             break
 
             self.update("")
+        # self.trouble_words.append(self.board.player1_hand[0].letter)
         for i in self.board.player1_hand:
             if i != None and i != 0:
                 self.trouble_words.append(i.letter)
+                break
 
     def do_nothing(self):
         print()
@@ -483,6 +500,8 @@ class Game:
             textRect3 = text3.get_rect()
             textRect3.center = (697.5, 425)
             self.win.blit(text3, textRect3)
+
+
 
         # if self.is_peel:
         #     pygame.draw.rect(self.win, RED, (325, 375, 750, 100))
