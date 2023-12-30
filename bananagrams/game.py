@@ -32,8 +32,15 @@ class Game:
 
         self.inital_play = True
         self.second_play = True
+
+        self.idk = True
+
         self.is_peel = False
+        self.is_peel_text = False
+
         self.is_dump = False
+        self.is_dump_text = False
+
         self.game_over = False
         self.found_board = True
 
@@ -53,34 +60,86 @@ class Game:
     def ai_dump(self):
         print("Dump!")
         if len(self.board.tiles) > 3:
+            self.is_dump = True
+            self.is_dump_text
             trouble_letter = self.find_most_troublesome_word()
 
             for x in range(len(self.board.player1_hand)):
                 if self.board.player1_hand[x] != 0:
-                    if self.board.player1_hand[x].letter == trouble_letter:
-
+                    if self.board.player1_hand[x].letter == "Q":
                         print("Dumping: " + self.board.player1_hand[x].letter)
                         # Take the element at the filled position and reset it col/row
                         self.board.player1_hand[x].set_row_col_without_calc(None, None)
-
                         # Take the element at the filled position and place it back in the tiles pile
                         self.board.tiles.append(self.board.player1_hand[x])
-
                         # Replace the element at the filled position with 0 in the player's hand
                         self.board.player1_hand[x] = 0
-
+                        # Replace the element at the filled position with None on the actual board
+                        self.board.board[15][x] = None
+                        break
+                    elif self.board.player1_hand[x].letter == "Z":
+                        print("Dumping: " + self.board.player1_hand[x].letter)
+                        # Take the element at the filled position and reset it col/row
+                        self.board.player1_hand[x].set_row_col_without_calc(None, None)
+                        # Take the element at the filled position and place it back in the tiles pile
+                        self.board.tiles.append(self.board.player1_hand[x])
+                        # Replace the element at the filled position with 0 in the player's hand
+                        self.board.player1_hand[x] = 0
+                        # Replace the element at the filled position with None on the actual board
+                        self.board.board[15][x] = None
+                        break
+                    elif self.board.player1_hand[x].letter == "V":
+                        print("Dumping: " + self.board.player1_hand[x].letter)
+                        # Take the element at the filled position and reset it col/row
+                        self.board.player1_hand[x].set_row_col_without_calc(None, None)
+                        # Take the element at the filled position and place it back in the tiles pile
+                        self.board.tiles.append(self.board.player1_hand[x])
+                        # Replace the element at the filled position with 0 in the player's hand
+                        self.board.player1_hand[x] = 0
+                        # Replace the element at the filled position with None on the actual board
+                        self.board.board[15][x] = None
+                        break
+                    elif self.board.player1_hand[x].letter == "J":
+                        print("Dumping: " + self.board.player1_hand[x].letter)
+                        # Take the element at the filled position and reset it col/row
+                        self.board.player1_hand[x].set_row_col_without_calc(None, None)
+                        # Take the element at the filled position and place it back in the tiles pile
+                        self.board.tiles.append(self.board.player1_hand[x])
+                        # Replace the element at the filled position with 0 in the player's hand
+                        self.board.player1_hand[x] = 0
+                        # Replace the element at the filled position with None on the actual board
+                        self.board.board[15][x] = None
+                        break
+                    elif self.board.player1_hand[x].letter == "Y":
+                        print("Dumping: " + self.board.player1_hand[x].letter)
+                        # Take the element at the filled position and reset it col/row
+                        self.board.player1_hand[x].set_row_col_without_calc(None, None)
+                        # Take the element at the filled position and place it back in the tiles pile
+                        self.board.tiles.append(self.board.player1_hand[x])
+                        # Replace the element at the filled position with 0 in the player's hand
+                        self.board.player1_hand[x] = 0
+                        # Replace the element at the filled position with None on the actual board
+                        self.board.board[15][x] = None
+                        break
+                    elif self.board.player1_hand[x].letter == trouble_letter:
+                        print("Dumping: " + self.board.player1_hand[x].letter)
+                        # Take the element at the filled position and reset it col/row
+                        self.board.player1_hand[x].set_row_col_without_calc(None, None)
+                        # Take the element at the filled position and place it back in the tiles pile
+                        self.board.tiles.append(self.board.player1_hand[x])
+                        # Replace the element at the filled position with 0 in the player's hand
+                        self.board.player1_hand[x] = 0
                         # Replace the element at the filled position with None on the actual board
                         self.board.board[15][x] = None
                         break
 
             empty_position = None
             filled_position = None
+
             k = 0
-            j = 0
-
             for i in self.board.player1_hand:
-                if i == 0 and k < 3:
 
+                if i == 0 and k < 3:
                     empty_position = self.board.player1_hand.index(i)
                     # Replace the first empty position in the players hand with the first tile from the board
                     self.board.player1_hand[empty_position] = self.board.tiles[0]
@@ -242,7 +301,10 @@ class Game:
                             self.board.board[15].append(None)
 
                     self.board.player1_hand = copy.deepcopy(hand_before)
-
+                    # for i in self.board.player1_hand:
+                    #     if i != None and i != 0:
+                    #         self.trouble_words.append(i.letter)
+                    #         break
                 del self.previous_boards[board_num + 1:]
                 del self.previous_hands[board_num + 1:]
                 del self.previous_hands_tiles[board_num + 1:]
@@ -277,12 +339,12 @@ class Game:
 
         solver = SolveState(basic_english(), board_to_parse, current_hand)
         solver.find_all_options()
+
         if self.inital_play:
             print("The Valid Boards After Initial Play", len(solver.valid_boards))
             self.inital_play = False
 
         if len(self.board.player1_hand_to_list_of_letters_no_zero()) == 0:
-
             self.peel()
 
         elif self.backtracker_called_count > 4:
@@ -303,8 +365,7 @@ class Game:
                 self.second_play = False
             else:
                 self.most_common_trouble_letters.append(self.find_most_troublesome_word())
-                new_board_tiles = solver.pic_board_with_trouble_letter(self.find_most_troublesome_word()).get_tiles()
-                # self.trouble_words = []
+                new_board_tiles = solver.pic_board_with_trouble_letter(self.find_most_troublesome_word(), self.board.player1_hand_to_list_of_letters()).get_tiles()
                 self.second_play = True
 
 
@@ -332,7 +393,6 @@ class Game:
                             break
 
             self.update("")
-        # self.trouble_words.append(self.board.player1_hand[0].letter)
         for i in self.board.player1_hand:
             if i != None and i != 0:
                 self.trouble_words.append(i.letter)
@@ -345,7 +405,8 @@ class Game:
         current_hand = []
 
         for i in self.board.player1_hand:
-            current_hand.append(i.letter.lower())
+            if i != 0:
+                current_hand.append(i.letter.lower())
         board_to_parse = Alg_Board(15)
 
 
@@ -358,8 +419,9 @@ class Game:
 
     def peel(self):
         self.is_peel = True
+        self.is_peel_text = True
         print("Peel!")
-        if len(self.board.tiles) > 0:
+        if len(self.board.tiles) > 1:
             for i in range(len(self.board.board[15])):
                 if self.board.board[15][i] == None:
                     self.board.board[15][i] = self.board.tiles[0]
@@ -368,7 +430,7 @@ class Game:
                     self.board.tiles.pop(0)
 
 
-                    if len(self.board.tiles) > 1:
+                    if len(self.board.tiles) > 0:
                         k = 0
                         for i in range(len(self.board.player2_hand)):
                             if self.board.player2_hand[i] == 0 and k < 1:
@@ -376,51 +438,68 @@ class Game:
                                 self.board.player2_board[15][i].player2_move(15, i)
                                 self.board.player2_hand[i] = self.board.player2_board[15][i]
                                 self.board.tiles.pop(0)
-                                k += 1
-                        break
 
+                                break
                     break
 
 
     def human_peel(self):
-        if self.board.player2_board[15][0] == None and self.board.player2_board[15][1] == None and self.board.player2_board[15][2] == None and self.board.player2_board[15][3] == None and self.board.player2_board[15][4] == None \
-                and self.board.player2_board[15][5] == None and self.board.player2_board[15][6] == None and self.board.player2_board[15][7] == None and self.board.player2_board[15][8] == None and self.board.player2_board[15][9] == None \
-                and self.board.player2_board[15][10] == None  and self.board.player2_board[15][11] == None and self.board.player2_board[15][12] == None and self.board.player2_board[15][13] == None and self.board.player2_board[15][14] == None and len(self.board.tiles) > 0:
-            self.board.player2_board[15][0] = self.board.tiles[0]
-            self.board.player2_board[15][0].player2_move(15,0)
-            self.board.player2_hand[0] = self.board.player2_board[15][0]
-            self.board.tiles.pop(0)
-            k = 0
-            for i in range(len(self.board.player1_hand)):
-                if self.board.player1_hand[i] == 0 and k < 1:
-                    self.board.board[15][i] = self.board.tiles[0]
-                    self.board.board[15][i].move(15, i)
-                    self.board.player1_hand[i] = self.board.board[15][i]
-                    self.board.tiles.pop(0)
-                    k += 1
+        if len(self.board.tiles) > 1:
+            if self.board.player2_board[15][0] == None and self.board.player2_board[15][1] == None and self.board.player2_board[15][2] == None and self.board.player2_board[15][3] == None and self.board.player2_board[15][4] == None \
+                    and self.board.player2_board[15][5] == None and self.board.player2_board[15][6] == None and self.board.player2_board[15][7] == None and self.board.player2_board[15][8] == None and self.board.player2_board[15][9] == None \
+                    and self.board.player2_board[15][10] == None  and self.board.player2_board[15][11] == None and self.board.player2_board[15][12] == None and self.board.player2_board[15][13] == None and self.board.player2_board[15][14] == None and len(self.board.tiles) > 0:
+                self.board.player2_board[15][0] = self.board.tiles[0]
+                self.board.player2_board[15][0].player2_move(15,0)
+                self.board.player2_hand[0] = self.board.player2_board[15][0]
+                self.board.tiles.pop(0)
+                k = 0
+
+
+                self.is_peel = True
+                self.is_peel_text = True
+                for i in range(len(self.board.player1_hand)):
+                    if self.board.player1_hand[i] == 0 and k < 1:
+                        self.board.board[15][i] = self.board.tiles[0]
+                        self.board.board[15][i].move(15, i)
+                        self.board.player1_hand[i] = self.board.board[15][i]
+                        self.board.tiles.pop(0)
+                        k += 1
 
     def human_dump(self, row, col):
-        if len(self.board.tiles) > 3:
+        if len(self.board.tiles) >= 3:
             empty_count = 0
             for q in self.board.player2_hand:
                 if q == 0:
                     empty_count += 1
 
             if row == 15 and col >= 0 and col < 15 and self.board.player2_hand[col] != 0 and empty_count >= 2:
+                # print("Dumping: ",self.board.player2_hand[col].letter )
+                # print(type(self.board.player2_hand[col]))
 
+                self.board.tiles.append(self.board.player2_hand[col])
                 self.board.player2_hand[col].set_row_col_without_calc(None, None)
-                self.board.tiles.append(self.board.tiles.append(self.board.player2_hand[col]))
+
+                #
+                # if(self.board.tiles[-2] == None):
+                #     print("None In Pile")
+
                 self.board.player2_hand[col] = 0
                 self.board.player2_board[15][col] = None
 
+                print("Setting is_dump_text to true")
+                self.is_dump = True
+                self.is_dump_text
                 q = 0
                 for i in range(15):
                     if self.board.player2_hand[i] == 0 and q < 3:
+                        # print("Retrieving:", self.board.tiles[0].letter)
                         self.board.player2_board[15][i] = self.board.tiles[0]
                         self.board.player2_board[15][i].player2_move(15, i)
                         self.board.player2_hand[i] = self.board.player2_board[15][i]
                         self.board.tiles.pop(0)
                         q += 1
+
+
 
 
     def get_board(self):
@@ -470,58 +549,60 @@ class Game:
         player1_letter_hand = self.board.player1_hand_to_list_of_letters()
 
     def update(self, user_txt):
+
         self.board.draw(self.win)
 
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render(user_txt.upper(), True, LETTERCOLOR)
-        textRect = text.get_rect()
-        textRect.center = (1063, 810)
-        self.win.blit(text, textRect)
+        if self.is_dump_text == False and self.is_peel_text == False:
+            text2 = font.render("Remaining Tiles: " + str(len(self.board.tiles)), True, LETTERCOLOR)
+            textRect2 = text2.get_rect()
+            textRect2.center = (697.5, 750)
+            self.win.blit(text2, textRect2)
 
-        text2 = font.render("Remaining Tiles: " + str(len(self.board.tiles)), True, LETTERCOLOR)
-        textRect2 = text2.get_rect()
-        textRect2.center = (697.5, 760)
-        self.win.blit(text2, textRect2)
+        if self.game_over == False:
 
-        font2 = pygame.font.Font('freesansbold.ttf', 32)
-        text4 = font2.render("Your Board",True, LETTERCOLOR)
-        textRect4 = text4.get_rect()
-        textRect4.center = (1056.25, 760)
+            font2 = pygame.font.Font('freesansbold.ttf', 32)
+            text4 = font2.render("Your Board",True, LETTERCOLOR)
+            textRect4 = text4.get_rect()
+            textRect4.center = (1076.25, 760)
+            pygame.draw.rect(self.win, RED, (975, 738, 200, 40), )
+            pygame.draw.rect(self.win, LETTERCOLOR, (975, 738, 200, 40), 1)
+            self.win.blit(text4, textRect4)
 
-        pygame.draw.rect(self.win, RED, (955, 740, 200, 40), )
-        pygame.draw.rect(self.win, LETTERCOLOR, (955, 740, 200, 40), 1)
-        self.win.blit(text4, textRect4)
+            font = pygame.font.Font('freesansbold.ttf', 32)
+            text = font.render(user_txt.upper(), True, LETTERCOLOR)
+            textRect = text.get_rect()
+            textRect.center = (1083, 800)
+            self.win.blit(text, textRect)
 
         if self.game_over:
-            pygame.draw.rect(self.win, RED, (325, 375, 750, 100))
-            pygame.draw.rect(self.win, LETTERCOLOR,(325, 375, 750, 100), 1)
+            pygame.draw.rect(self.win, RED, (325, 735, 750, 100))
+            pygame.draw.rect(self.win, LETTERCOLOR,(325, 735, 750, 100), 1)
             font = pygame.font.Font('freesansbold.ttf', 78)
             text3 = font.render("BANANAGRAMS!", True, LETTERCOLOR)
             textRect3 = text3.get_rect()
-            textRect3.center = (697.5, 425)
+            textRect3.center = (697.5, 785)
             self.win.blit(text3, textRect3)
 
+        if self.is_peel_text == True:
 
+            pygame.draw.rect(self.win, RED, (550, 730, 315, 100))
+            pygame.draw.rect(self.win, LETTERCOLOR, (550, 730, 315, 100), 1)
+            font = pygame.font.Font('freesansbold.ttf', 85)
+            text3 = font.render("PEEL!", True, LETTERCOLOR)
+            textRect3 = text3.get_rect()
+            textRect3.center = (710, 785)
+            self.win.blit(text3, textRect3)
 
-        # if self.is_peel:
-        #     pygame.draw.rect(self.win, RED, (325, 375, 750, 100))
-        #     pygame.draw.rect(self.win, LETTERCOLOR, (325, 375, 750, 100), 1)
-        #     font = pygame.font.Font('freesansbold.ttf', 78)
-        #     text3 = font.render("PEEL!", True, LETTERCOLOR)
-        #     textRect3 = text3.get_rect()
-        #     textRect3.center = (697.5, 425)
-        #     self.win.blit(text3, textRect3)
-        #     self.is_peel = False
+        if self.is_dump_text == True:
+            pygame.draw.rect(self.win, RED, (550, 730, 315, 100))
+            pygame.draw.rect(self.win, LETTERCOLOR, (550, 730, 315, 100), 1)
+            font = pygame.font.Font('freesansbold.ttf', 85)
+            text3 = font.render("DUMP!", True, LETTERCOLOR)
+            textRect3 = text3.get_rect()
+            textRect3.center = (710, 785)
+            self.win.blit(text3, textRect3)
 
-        #
-        # if self.is_dump:
-        #     pygame.draw.rect(self.win, RED, (325, 375, 750, 100))
-        #     pygame.draw.rect(self.win, LETTERCOLOR, (325, 375, 750, 100), 1)
-        #     font = pygame.font.Font('freesansbold.ttf', 78)
-        #     text3 = font.render("DUMP!", True, LETTERCOLOR)
-        #     textRect3 = text3.get_rect()
-        #     textRect3.center = (697.5, 425)
-        #     self.win.blit(text3, textRect3)
         pygame.display.update()
 
     def select(self, row, col):
@@ -541,7 +622,7 @@ class Game:
         return False
 
     def check_game_over(self):
-        if len(self.board.tiles) < 1 and len(self.board.player1_hand_to_list_of_letters_no_zero()) == 0:
+        if len(self.board.tiles) < 2 and len(self.board.player1_hand_to_list_of_letters_no_zero()) == 0:
             print("Game Over is True")
             return True
 
