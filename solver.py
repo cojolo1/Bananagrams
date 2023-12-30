@@ -53,13 +53,23 @@ class SolveState:
         board_if_we_played_that.get_tiles()[15][0] = word
 
 
-    def pic_board_with_trouble_letter(self, letter):
+    def pic_board_with_trouble_letter(self, letter, hand):
         board_with_trouble_letter = None
 
         print("The trouble letter is: ", letter)
         for i in self.valid_boards:
+            if "q" in i.get_tiles()[15][0] and "Q" in hand:
+                return i
+            elif "z"in i.get_tiles()[15][0] and "Z" in hand:
+                return i
+            elif "j"in i.get_tiles()[15][0] and "J" in hand:
+                return i
+            elif "v"in i.get_tiles()[15][0] and "V" in hand:
+                return i
+            elif "y"in i.get_tiles()[15][0] and "Y" in hand:
+                return i
             if letter.lower() in i.get_tiles()[15][0]:
-                board_with_trouble_letter = i
+                return i
 
         if board_with_trouble_letter == None:
             print("No Boards With Trouble Letter")
@@ -75,7 +85,6 @@ class SolveState:
         return board_to_return
 
     def pick_random_start(self):
-
         random.shuffle(self.valid_starters)
         return self.valid_starters[0]
 
