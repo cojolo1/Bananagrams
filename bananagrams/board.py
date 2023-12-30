@@ -193,6 +193,7 @@ class Board:
             tile = self.tiles[0]
             self.player2_hand.append(tile)
             self.tiles.pop(0)
+            # self.player2_hand.append(0)
             k += 1
 
     def player1_hand_to_list_of_letters(self):
@@ -264,6 +265,8 @@ class Board:
         for col in range(len(self.player2_hand)):
             self.player2_board[15].append(self.player2_hand[col])
             self.player2_hand[col].player2_set_row_col(15, col)
+            # self.player2_board[15].append(None)
+
 
 
     def get_piece(self, row, col):
