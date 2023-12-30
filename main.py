@@ -14,10 +14,11 @@ def get_row_col_from_mouse(pos):
     return row, col
 
 def main():
-
+    """Runs the game loop"""
     run = True
     clock = pygame.time.Clock()
     game = Game(WIN)
+
 
     user_text = ''
     r_row = 0
@@ -28,23 +29,28 @@ def main():
     active = False
     selected_tile = False
 
+    #The different user-defined events that we will used to allow the
+    #AI to make moves and display the approtiate text
     AI_PLAY = pygame.USEREVENT + 1
     AI_PLAY2 = pygame.USEREVENT + 2
     PEEL_DISPLAY_OFF = pygame.USEREVENT + 3
     DUMP_DISPLAY_OFF = pygame.USEREVENT + 4
 
-    pygame.time.set_timer(AI_PLAY2, 1, 1)
-    pygame.time.set_timer(AI_PLAY, 100)
+    #Sets the frequency and occurences for the different moves the AI player will make
+    pygame.time.set_timer(AI_PLAY2, 1500, 1)
+    pygame.time.set_timer(AI_PLAY, 6000)
 
     while run:
         clock.tick(FPS)
 
+        #Determines if a player/AI has "Peeled"
         if game.is_peel:
             print("Setting Peel Timer")
             pygame.time.set_timer(PEEL_DISPLAY_OFF, 700, 1)
             game.is_peel = False
             game.is_peel_text = True
 
+        # Determines if a player/AI has "Dumped"
         if game.is_dump:
             print("Setting Dump Timer")
             pygame.time.set_timer(DUMP_DISPLAY_OFF, 700, 1)
@@ -59,22 +65,25 @@ def main():
 
             if game_over == False:
 
-
+                #Removes the peel text display after 0.7 seconds
                 if event.type == PEEL_DISPLAY_OFF:
                     print("Peel Display Off Event")
                     print("is_peel_text", game.is_peel_text)
                     game.is_peel_text = False
 
+                # Removes the dump text display after 0.7 seconds
                 if event.type == DUMP_DISPLAY_OFF:
                     print("Dump Display Off Event")
                     print("is_dump_text", game.is_dump_text)
                     game.is_dump_text = False
 
+                #Calls the AI's initial play
                 if event.type ==AI_PLAY2:
                     total_moves += 1
                     game.ai_inital_play()
                     game.update(user_text)
 
+                #Calls all the AI's plays after initial play
                 if event.type == AI_PLAY:
                     total_moves +=1
                     if game.ai_normal_play() == True:
@@ -83,6 +92,7 @@ def main():
                         game.game_over = True
                         game_over = True
 
+                #Controls all the events associated with a keydown
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_1:
                         print("Peel!")
@@ -112,6 +122,7 @@ def main():
                         user_text += event.unicode
                         print(user_text)
 
+                #Controls all the events associated with a mouse click
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     pos = pygame.mouse.get_pos()
@@ -130,7 +141,6 @@ def main():
                                 game.select(row, col)
                             else:
                                 print("you selected an empty tile")
-                                # game.select(row, col)
                                 if selected_tile:
                                     game.select(row,col)
                                     selected_tile = False
